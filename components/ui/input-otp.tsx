@@ -1,6 +1,69 @@
+"use client"
+
+import * as React from "react"
+import { cn } from "./cn"
+
+const OTPInputContext = React.createContext<{
+  slots: Array<{
+    char: string
+    hasFakeCaret: boolean
+    isActive: boolean
+  }>
+}>({
+  slots: [],
+})
+
+const InputOTP = React.forwardRef<
+  React.ComponentRef<"div">,
+  React.ComponentPropsWithoutRef<"div">
+>(({ className, children, ...props }, ref) => {
+  return (
+    <div ref={ref} className={cn("flex items-center", className)} {...props}>
+      {children}
+    </div>
+  )
+})
+InputOTP.displayName = "InputOTP"
+
+const InputOTPGroup = React.forwardRef<
+  React.ComponentRef<"div">,
+  React.ComponentPropsWithoutRef<"div">
+>(({ className, children, ...props }, ref) => {
+  const [slots, setSlots] = React.useState<
+    Array<{
+      char: string
+      hasFakeCaret: boolean
+      isActive: boolean
+    }>
+  >([])
+
+  React.useEffect(() => {
+    const count = React.Children.count(children)
+    setSlots(
+      Array.from({ length: count }, (_, i) => ({
+        char: "",
+        hasFakeCaret: false,
+        isActive: false,
+      }))
+    )
+  }, [children])
+
+  return (
+    <OTPInputContext.Provider value={{ slots }}>
+      <div
+        ref={ref}
+        className={cn("flex items-center has-[:disabled]:opacity-50", className)}
+        {...props}
+      >
+        {children}
+      </div>
+    </OTPInputContext.Provider>
+  )
+})
+InputOTPGroup.displayName = "InputOTPGroup"
 
 const InputOTPSlot = React.forwardRef<
-  React.ElementRef<"div">,
+  React.ComponentRef<"div">,
   React.ComponentPropsWithoutRef<"div"> & { index: number }
 >(({ index, className, ...props }, ref) => {
   const inputOTPContext = React.useContext(OTPInputContext)
@@ -28,7 +91,7 @@ const InputOTPSlot = React.forwardRef<
 InputOTPSlot.displayName = "InputOTPSlot"
 
 const InputOTPSeparator = React.forwardRef<
-  React.ElementRef<"div">,
+  React.ComponentRef<"div">,
   React.ComponentPropsWithoutRef<"div">
 >(({ ...props }, ref) => (
   <div ref={ref} role="separator" {...props}>
@@ -36,5 +99,9 @@ const InputOTPSeparator = React.forwardRef<
   </div>
 ))
 InputOTPSeparator.displayName = "InputOTPSeparator"
+
+const Dot = () => (
+  <div className="h-1 w-1 rounded-full bg-border" />
+)
 
 export { InputOTP, InputOTPGroup, InputOTPSlot, InputOTPSeparator }
