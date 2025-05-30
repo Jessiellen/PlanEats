@@ -1,8 +1,8 @@
-"use client"
-
 import * as React from "react"
 import { ChevronLeft, ChevronRight, MoreHorizontal } from "lucide-react"
-import { cn } from "./cn"
+
+import { cn } from "@/lib/utils"
+import { ButtonProps, buttonVariants } from "@/components/ui/button"
 
 const Pagination = ({ className, ...props }: React.ComponentProps<"nav">) => (
   <nav
@@ -25,7 +25,6 @@ const PaginationContent = React.forwardRef<
   />
 ))
 PaginationContent.displayName = "PaginationContent"
-
 const PaginationItem = React.forwardRef<
   HTMLLIElement,
   React.ComponentProps<"li">
@@ -36,26 +35,22 @@ PaginationItem.displayName = "PaginationItem"
 
 type PaginationLinkProps = {
   isActive?: boolean
-  size?: "default" | "sm" | "lg"
-} & React.ComponentProps<"a">
+} & Pick<ButtonProps, "size"> &
+  React.ComponentProps<"a">
 
 const PaginationLink = ({
   className,
   isActive,
-  size = "default",
+  size = "icon",
   ...props
 }: PaginationLinkProps) => (
   <a
     aria-current={isActive ? "page" : undefined}
     className={cn(
-      "flex items-center justify-center rounded-md border px-3 text-sm font-medium transition-colors",
-      {
-        "h-9": size === "default",
-        "h-8": size === "sm",
-        "h-10": size === "lg",
-        "border-primary bg-primary text-primary-foreground": isActive,
-        "border-border hover:bg-accent hover:text-accent-foreground": !isActive,
-      },
+      buttonVariants({
+        variant: isActive ? "outline" : "ghost",
+        size,
+      }),
       className
     )}
     {...props}

@@ -1,242 +1,151 @@
+"use client"
+
+import type React from "react"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Badge } from "@/components/ui/badge"
-import { Camera, Edit, Heart, Clock, ChefHat, Award } from "lucide-react"
+import { Checkbox } from "@/components/ui/checkbox"
+import Link from "next/link"
 import Image from "next/image"
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import { Eye, EyeOff } from "lucide-react"
 
-export default function Perfil() {
-  return (
-    <div className="container py-8">
-      <div className="flex flex-col gap-8">
-        <div className="flex flex-col md:flex-row gap-6 items-start">
-          <Card className="w-full md:w-80">
-            <CardHeader className="text-center">
-              <div className="flex flex-col items-center gap-4">
-                <div className="relative">
-                  <Avatar className="h-24 w-24">
-                    <AvatarImage src="/placeholder.svg?height=96&width=96" alt="Foto de perfil" />
-                    <AvatarFallback>US</AvatarFallback>
-                  </Avatar>
-                  <Button size="icon" variant="secondary" className="absolute -bottom-2 -right-2 h-8 w-8 rounded-full">
-                    <Camera className="h-4 w-4" />
+export default function Login() {
+  const [showPassword, setShowPassword] = useState(false)
+  const router = useRouter()
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Simulação de login bem-sucedido
+    router.push("/meu-frigorifico")
+  }
+   return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-green-50 to-white p-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <div className="flex justify-center mb-4">
+            <Image
+              src="/images/Logo.png"
+              alt="PlanEats Logo"
+              width={64}
+              height={64}
+              className="rounded-full"
+               />
+          </div>
+          <h1 className="text-2xl font-bold">
+            Plan<span className="text-amber-500">Eats</span>
+          </h1>
+          <p className="text-muted-foreground mt-2">Bem-vindo de volta ao PlanEats</p>
+        </div>
+         <Card className="border-none shadow-lg">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-2xl text-center">Entrar</CardTitle>
+            <CardDescription className="text-center">
+              Entre com seu e-mail e senha para acessar sua conta
+            </CardDescription>
+            </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="email">E-mail</Label>
+                <Input id="email" type="email" placeholder="seu@email.com" required />
+              </div>
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <Label htmlFor="password">Senha</Label>
+                  <Link href="/esqueci-senha" className="text-xs text-green-600 hover:underline">
+                    Esqueceu a senha?
+                  </Link>
+                </div>
+                 <div className="relative">
+                  <Input id="password" type={showPassword ? "text" : "password"} placeholder="••••••••" required />
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="icon"
+                    className="absolute right-0 top-0 h-full px-3"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >{showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    <span className="sr-only">{showPassword ? "Esconder senha" : "Mostrar senha"}</span>
                   </Button>
                 </div>
-                <div>
-                  <h2 className="text-xl font-bold">Maria Silva</h2>
-                  <p className="text-sm text-muted-foreground">maria.silva@email.com</p>
-                </div>
               </div>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-4">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Receitas Salvas</span>
-                  <Badge variant="secondary">24</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Receitas Criadas</span>
-                  <Badge variant="secondary">8</Badge>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm font-medium">Ingredientes Cadastrados</span>
-                  <Badge variant="secondary">32</Badge>
-                </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox id="remember" />
+                <label
+                  htmlFor="remember"
+                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                > Lembrar de mim
+                </label>
               </div>
-            </CardContent>
-            <CardFooter>
-              <Button variant="outline" className="w-full">
-                <Edit className="mr-2 h-4 w-4" />
-                Editar Perfil
+              <Button type="submit" className="w-full bg-green-600 hover:bg-green-700">
+                Entrar
               </Button>
-            </CardFooter>
-          </Card>
-
-          <div className="flex-1">
-            <Tabs defaultValue="informacoes" className="w-full">
-              <TabsList className="mb-4">
-                <TabsTrigger value="informacoes">Informações</TabsTrigger>
-                <TabsTrigger value="receitas-salvas">Receitas Salvas</TabsTrigger>
-                <TabsTrigger value="receitas-criadas">Receitas Criadas</TabsTrigger>
-                <TabsTrigger value="conquistas">Conquistas</TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="informacoes">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Informações Pessoais</CardTitle>
-                    <CardDescription>Atualize suas informações pessoais</CardDescription>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div className="space-y-2">
-                        <Label htmlFor="nome">Nome</Label>
-                        <Input id="nome" defaultValue="Maria Silva" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="email">Email</Label>
-                        <Input id="email" defaultValue="maria.silva@email.com" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="telefone">Telefone</Label>
-                        <Input id="telefone" defaultValue="(11) 98765-4321" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="data-nascimento">Data de Nascimento</Label>
-                        <Input id="data-nascimento" type="date" defaultValue="1990-01-01" />
-                      </div>
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label htmlFor="bio">Biografia</Label>
-                      <textarea
-                        id="bio"
-                        className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                        defaultValue="Apaixonada por culinária e sempre em busca de novas receitas para experimentar. Adoro cozinhar para a família e amigos nos finais de semana."
-                      />
-                    </div>
-
-                    <div className="space-y-2">
-                      <Label>Preferências Alimentares</Label>
-                      <div className="flex flex-wrap gap-2">
-                        <Badge variant="outline">Vegetariano</Badge>
-                        <Badge variant="outline">Sem Glúten</Badge>
-                        <Badge variant="outline">Baixo Carboidrato</Badge>
-                        <Button variant="ghost" size="sm" className="h-7 px-2 text-xs">
-                          <Edit className="mr-1 h-3 w-3" />
-                          Editar
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                  <CardFooter>
-                    <Button className="bg-green-600 hover:bg-green-700">Salvar Alterações</Button>
-                  </CardFooter>
-                </Card>
-              </TabsContent>
-
-              <TabsContent value="receitas-salvas">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Card className="overflow-hidden">
-                    <CardHeader className="p-0">
-                      <div className="relative h-40 w-full">
-                        <Image
-                          src="/placeholder.svg?height=160&width=320"
-                          alt="Arroz de Frango"
-                          fill
-                          className="object-cover"
-                        />
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/80 text-rose-500"
-                        >
-                          <Heart className="h-4 w-4 fill-current" />
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-lg font-semibold">Arroz de Frango</h3>
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-1 text-sm">
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                            <span>40 min</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-sm">
-                            <ChefHat className="h-4 w-4 text-muted-foreground" />
-                            <span>Médio</span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card className="overflow-hidden">
-                    <CardHeader className="p-0">
-                      <div className="relative h-40 w-full">
-                        <Image
-                          src="/placeholder.svg?height=160&width=320"
-                          alt="Salada de Tomate com Queijo"
-                          fill
-                          className="object-cover"
-                        />
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="absolute top-2 right-2 h-8 w-8 rounded-full bg-white/80 text-rose-500"
-                        >
-                          <Heart className="h-4 w-4 fill-current" />
-                        </Button>
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-4">
-                      <div className="flex flex-col gap-2">
-                        <h3 className="text-lg font-semibold">Salada de Tomate com Queijo</h3>
-                        <div className="flex items-center gap-4">
-                          <div className="flex items-center gap-1 text-sm">
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                            <span>10 min</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-sm">
-                            <ChefHat className="h-4 w-4 text-muted-foreground" />
-                            <span>Fácil</span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-
-              <TabsContent value="conquistas">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <Card>
-                    <CardContent className="pt-6 text-center">
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="rounded-full bg-amber-100 p-3">
-                          <Award className="h-8 w-8 text-amber-600" />
-                        </div>
-                        <h3 className="font-medium">Chef Iniciante</h3>
-                        <p className="text-sm text-muted-foreground">Preparou 10 receitas diferentes</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="pt-6 text-center">
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="rounded-full bg-green-100 p-3">
-                          <Award className="h-8 w-8 text-green-600" />
-                        </div>
-                        <h3 className="font-medium">Organizador</h3>
-                        <p className="text-sm text-muted-foreground">Cadastrou 30 ingredientes</p>
-                      </div>
-                    </CardContent>
-                  </Card>
-
-                  <Card>
-                    <CardContent className="pt-6 text-center">
-                      <div className="flex flex-col items-center gap-2">
-                        <div className="rounded-full bg-gray-100 p-3">
-                          <Award className="h-8 w-8 text-gray-400" />
-                        </div>
-                        <h3 className="font-medium">Chef Criativo</h3>
-                        <p className="text-sm text-muted-foreground">Criou 5 receitas próprias</p>
-                        <Badge variant="outline" className="mt-2">
-                          Em progresso: 2/5
-                        </Badge>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </div>
-              </TabsContent>
-            </Tabs>
-          </div>
-        </div>
+            </form>
+            <div className="mt-4 text-center text-sm">
+              <p>
+                Não tem uma conta?{" "}
+                <Link href="/cadastro" className="text-green-600 hover:underline font-medium">
+                  Cadastre-se
+                </Link>
+              </p>
+            </div>
+          </CardContent><CardFooter className="flex flex-col">
+            <div className="relative my-2 w-full">
+              <div className="absolute inset-0 flex items-center">
+                <span className="w-full border-t" />
+              </div>
+              <div className="relative flex justify-center text-xs uppercase">
+                <span className="bg-background px-2 text-muted-foreground">ou continue com</span>
+              </div>
+            </div> <div className="grid grid-cols-2 gap-4 mt-4 w-full">
+              <Button variant="outline">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5 mr-2"
+                  fill="currentColor"
+                ><path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  /><path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
+                  <path d="M1 1h22v22H1z" fill="none" />
+                </svg>
+                Google</Button>
+              <Button variant="outline">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5 mr-2"
+                  fill="currentColor"
+                >
+                  <path
+                    d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z"
+                    fill="#1877F2"
+                  />
+                  <path
+                    d="M15.893 14.89l.443-2.89h-2.773v-1.876c0-.791.387-1.562 1.63-1.562h1.26v-2.46s-1.144-.195-2.238-.195c-2.285 0-3.777 1.384-3.777 3.89V12h-2.54v2.89h2.54v6.988a10.04 10.04 0 003.124 0v-6.988h2.33z"
+                    fill="#FFFFFF"/>
+                </svg>
+                Facebook
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
       </div>
     </div>
   )

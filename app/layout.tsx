@@ -1,7 +1,7 @@
+import '../styles/globals.css'
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
-import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import Header from "@/components/header"
 
@@ -18,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={inter.className}>
+    <html lang="pt-BR" suppressHydrationWarning>
+      <body className={`${inter.className} bg-white`}>
         <ThemeProvider attribute="class" defaultTheme="light">
           <Header />
           <main className="min-h-screen bg-gradient-to-b from-green-50 to-white">{children}</main>

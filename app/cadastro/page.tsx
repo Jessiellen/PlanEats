@@ -15,6 +15,9 @@ import { Eye, EyeOff } from "lucide-react"
 
 export default function Cadastro() {
   const [showPassword, setShowPassword] = useState(false)
+  const [name, setName] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
   const router = useRouter()
 
   const handleRegister = (e: React.FormEvent) => {
@@ -29,7 +32,7 @@ export default function Cadastro() {
         <div className="text-center mb-8">
           <div className="flex justify-center mb-4">
             <Image
-              src="/placeholder.svg?height=64&width=64"
+              src="/images/Logo.png"
               alt="PlanEats Logo"
               width={64}
               height={64}
@@ -53,16 +56,36 @@ export default function Cadastro() {
             <form onSubmit={handleRegister} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="name">Nome</Label>
-                <Input id="name" placeholder="Seu nome" required />
+                <Input
+                  id="name"
+                  placeholder="Seu nome"
+                  required
+                  value={name}
+                  onChange={e => setName(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="email">E-mail</Label>
-                <Input id="email" type="email" placeholder="seu@email.com" required />
+                <Input
+                  id="email"
+                  type="email"
+                  placeholder="seu@email.com"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Senha</Label>
                 <div className="relative">
-                  <Input id="password" type={showPassword ? "text" : "password"} placeholder="••••••••" required />
+                  <Input
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    placeholder="••••••••"
+                    required
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                  />
                   <Button
                     type="button"
                     variant="ghost"

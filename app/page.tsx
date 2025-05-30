@@ -12,10 +12,11 @@ export default function Home() {
   const router = useRouter()
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-green-50">
+
       {/* Hero Section */}
-      <section className="py-12 md:py-20">
-        <div className="container grid gap-6 md:grid-cols-2 md:gap-12 items-center">
+      <section className="py-16 md:py-24 bg-green-50">
+        <div className="container grid gap-8 md:grid-cols-2 md:gap-16 items-center">
           <div className="flex flex-col gap-4">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
               <span className="text-green-600">PLAN</span> SMARTER, <span className="text-amber-500">EAT</span> BETTER.
@@ -35,9 +36,10 @@ export default function Home() {
           </div>
           <div className="relative h-[400px] w-full rounded-xl overflow-hidden shadow-xl">
             <Image
-              src="/placeholder.svg?height=400&width=600"
+              src="/images/Initial.png"
               alt="Frigorífico organizado com alimentos frescos"
-              fill
+              width={600}
+              height={400}
               className="object-cover"
               priority
             />
@@ -115,7 +117,7 @@ export default function Home() {
             <Card className="overflow-hidden">
               <div className="relative h-48 w-full">
                 <Image
-                  src="/placeholder.svg?height=192&width=384"
+                  src="/images/Arroz de Frango.png"
                   alt="Arroz de Frango"
                   fill
                   className="object-cover"
@@ -143,7 +145,7 @@ export default function Home() {
             <Card className="overflow-hidden">
               <div className="relative h-48 w-full">
                 <Image
-                  src="/placeholder.svg?height=192&width=384"
+                  src="/images/Salada de Tomate com Queijo.png"
                   alt="Salada de Tomate com Queijo"
                   fill
                   className="object-cover"
@@ -171,7 +173,7 @@ export default function Home() {
             <Card className="overflow-hidden">
               <div className="relative h-48 w-full">
                 <Image
-                  src="/placeholder.svg?height=192&width=384"
+                  src="/images/Omelete de Tomate e Cebola.png"
                   alt="Omelete de Tomate e Cebola"
                   fill
                   className="object-cover"
@@ -317,7 +319,7 @@ export default function Home() {
             <div className="flex flex-col gap-4">
               <Link href="/" className="flex items-center gap-2">
                 <Image
-                  src="/placeholder.svg?height=32&width=32"
+                  src="/images/Logo.png"
                   alt="PlanEats Logo"
                   width={32}
                   height={32}
