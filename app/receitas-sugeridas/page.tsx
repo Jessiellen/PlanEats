@@ -1,12 +1,39 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Clock, ChefHat, Sparkles, Filter } from "lucide-react"
+import { Clock, ChefHat, Sparkles } from "lucide-react"
 import Image from "next/image"
 import Link from "next/link"
+import { useState } from "react"
+import { useAppStore } from "@/lib/store"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useRouter } from "next/navigation"
 
 export default function ReceitasSugeridas() {
+  const { recipes } = useAppStore()
+  const [timeFilter, setTimeFilter] = useState("all")
+  const [difficultyFilter, setDifficultyFilter] = useState("all")
+  const router = useRouter()
+
+  const filteredRecipes = recipes.filter((recipe) => {
+    const timeMatch =
+      timeFilter === "all" ||
+      (timeFilter === "quick" && Number.parseInt(recipe.time) <= 30) ||
+      (timeFilter === "medium" && Number.parseInt(recipe.time) > 30 && Number.parseInt(recipe.time) <= 60) ||
+      (timeFilter === "long" && Number.parseInt(recipe.time) > 60)
+
+    const difficultyMatch = difficultyFilter === "all" || recipe.difficulty === difficultyFilter
+
+    return timeMatch && difficultyMatch
+  })
+
+  const handleRecipeClick = (recipeId: string) => {
+    router.push(`/receita/${recipeId}`)
+  }
+
   return (
     <div className="container py-8">
       <div className="flex flex-col gap-6">
@@ -17,13 +44,28 @@ export default function ReceitasSugeridas() {
 
         <div className="flex flex-col sm:flex-row gap-4 justify-between">
           <div className="flex gap-2">
-            <Button variant="outline" className="gap-2">
-              <Filter className="h-4 w-4" />
-              Filtrar
-            </Button><Button variant="outline" className="gap-2">
-              <Clock className="h-4 w-4" />
-              Tempo de preparo
-            </Button>
+            <Select value={difficultyFilter} onValueChange={setDifficultyFilter}>
+              <SelectTrigger className="w-[140px]">
+                <SelectValue placeholder="Dificuldade" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todas</SelectItem>
+                <SelectItem value="Fácil">Fácil</SelectItem>
+                <SelectItem value="Médio">Médio</SelectItem>
+                <SelectItem value="Difícil">Difícil</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={timeFilter} onValueChange={setTimeFilter}>
+              <SelectTrigger className="w-[160px]">
+                <SelectValue placeholder="Tempo de preparo" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">Todos os tempos</SelectItem>
+                <SelectItem value="quick">Rápidas (até 30min)</SelectItem>
+                <SelectItem value="medium">Médias (30-60min)</SelectItem>
+                <SelectItem value="long">Demoradas (+60min)</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <Button asChild className="bg-green-600 hover:bg-green-700">
             <Link href="/gerar-receitas">
@@ -31,226 +73,67 @@ export default function ReceitasSugeridas() {
               Gerar Novas Receitas
             </Link>
           </Button>
-        </div><Tabs defaultValue="todas" className="w-full">
+        </div>
+
+        <Tabs defaultValue="todas" className="w-full">
           <TabsList className="mb-4">
-            <TabsTrigger value="todas">Todas</TabsTrigger>
+            <TabsTrigger value="todas">Todas ({filteredRecipes.length})</TabsTrigger>
             <TabsTrigger value="rapidas">Rápidas</TabsTrigger>
             <TabsTrigger value="saudaveis">Saudáveis</TabsTrigger>
             <TabsTrigger value="economicas">Econômicas</TabsTrigger>
             <TabsTrigger value="favoritas">Favoritas</TabsTrigger>
           </TabsList>
-           <TabsContent value="todas" className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Omelete de Tomate e Cebola */}
-              <Card className="overflow-hidden">
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src="/placeholder.svg?height=192&width=384"
-                      alt="Omelete de Tomate e Cebola"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute bottom-2 left-2">
-                      <Badge className="bg-green-600 hover:bg-green-700">Fácil</Badge>
-                    </div>
-                  </div> </CardHeader>
-                <CardContent className="p-4">
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-semibold">Omelete de Tomate e Cebola</h3>
-                    <p className="text-sm text-muted-foreground">Um omelete simples e delicioso com tomate e cebola.</p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <div className="flex items-center gap-1 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>15 minutos</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm">
-                        <ChefHat className="h-4 w-4 text-muted-foreground" />
-                        <span>Fácil</span>
-                      </div>
-                    </div>
-                  </div></CardContent>
-                <CardFooter className="p-4 pt-0">
-                  <Button className="w-full bg-green-600 hover:bg-green-700">Ver Receita</Button>
-                </CardFooter>
-              </Card>
 
-              {/* Arroz de Frango */}
-              <Card className="overflow-hidden">
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src="/placeholder.svg?height=192&width=384"
-                      alt="Arroz de Frango"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute bottom-2 left-2">
-                      <Badge className="bg-amber-600 hover:bg-amber-700">Médio</Badge>
-                    </div>
-                  </div></CardHeader>
-                <CardContent className="p-4">
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-semibold">Arroz de Frango</h3>
-                    <p className="text-sm text-muted-foreground">Um prato completo de arroz com frango e legumes.</p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <div className="flex items-center gap-1 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>40 minutos</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm">
-                        <ChefHat className="h-4 w-4 text-muted-foreground" />
-                        <span>Médio</span>
+          <TabsContent value="todas" className="space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredRecipes.map((recipe) => (
+                <Card
+                  key={recipe.id}
+                  className="overflow-hidden cursor-pointer hover:shadow-lg transition-shadow"
+                  onClick={() => handleRecipeClick(recipe.id)}
+                >
+                  <CardHeader className="p-0">
+                    <div className="relative h-48 w-full">
+                      <Image
+                        src={recipe.image || "/placeholder.svg?height=192&width=384"}
+                        alt={recipe.title}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className="absolute bottom-2 left-2">
+                        <Badge className="bg-green-600 hover:bg-green-700">{recipe.difficulty}</Badge>
                       </div>
                     </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="p-4 pt-0">
-                  <Button className="w-full bg-green-600 hover:bg-green-700">Ver Receita</Button>
-                </CardFooter>
-              </Card>
-              {/* Salada de Tomate com Queijo */}
-              <Card className="overflow-hidden">
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src="/placeholder.svg?height=192&width=384"
-                      alt="Salada de Tomate com Queijo"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute bottom-2 left-2">
-                      <Badge className="bg-green-600 hover:bg-green-700">Fácil</Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-semibold">Salada de Tomate com Queijo</h3>
-                    <p className="text-sm text-muted-foreground">Uma salada fresca e rápida de preparar.</p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <div className="flex items-center gap-1 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>10 minutos</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm">
-                        <ChefHat className="h-4 w-4 text-muted-foreground" />
-                        <span>Fácil</span>
-                      </div>
-                    </div>
-                     </div>
-                </CardContent>
-                <CardFooter className="p-4 pt-0">
-                  <Button className="w-full bg-green-600 hover:bg-green-700">Ver Receita</Button>
-                </CardFooter>
-              </Card>
-              {/* Mais receitas */}
-              <Card className="overflow-hidden">
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src="/placeholder.svg?height=192&width=384"
-                      alt="Sopa de Legumes"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute bottom-2 left-2">
-                      <Badge className="bg-green-600 hover:bg-green-700">Fácil</Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4">
+                  </CardHeader>
+                  <CardContent className="p-4">
                     <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-semibold">Sopa de Legumes</h3>
-                    <p className="text-sm text-muted-foreground">Uma sopa nutritiva com os legumes da sua geladeira.</p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <div className="flex items-center gap-1 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>30 minutos</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm">
-                        <ChefHat className="h-4 w-4 text-muted-foreground" />
-                        <span>Fácil</span>
-                      </div>
-                    </div>
-                  </div>
-                </CardContent><CardFooter className="p-4 pt-0">
-                  <Button className="w-full bg-green-600 hover:bg-green-700">Ver Receita</Button>
-                </CardFooter>
-              </Card>
-            </div>
-          </TabsContent>
-
-          {/* Outros conteúdos de abas aqui */} 
-          <TabsContent value="rapidas">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Omelete de Tomate e Cebola */}
-              <Card className="overflow-hidden">
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src="/placeholder.svg?height=192&width=384"
-                      alt="Omelete de Tomate e Cebola"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute bottom-2 left-2">
-                      <Badge className="bg-green-600 hover:bg-green-700">Fácil</Badge>
-                    </div>
-                    </div>
-                </CardHeader>
-                <CardContent className="p-4">
-                  <div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-semibold">Omelete de Tomate e Cebola</h3>
-                    <p className="text-sm text-muted-foreground">Um omelete simples e delicioso com tomate e cebola.</p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <div className="flex items-center gap-1 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>15 minutos</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm">
-                        <ChefHat className="h-4 w-4 text-muted-foreground" />
-                        <span>Fácil</span> </div>
-                    </div>
-                  </div>
-                </CardContent>
-                <CardFooter className="p-4 pt-0">
-                  <Button className="w-full bg-green-600 hover:bg-green-700">Ver Receita</Button>
-                </CardFooter>
-              </Card>
-              {/* Salada de Tomate com Queijo */}
-              <Card className="overflow-hidden">
-                <CardHeader className="p-0">
-                  <div className="relative h-48 w-full">
-                    <Image
-                      src="/placeholder.svg?height=192&width=384"
-                      alt="Salada de Tomate com Queijo"
-                      fill
-                      className="object-cover"
-                    />
-                    <div className="absolute bottom-2 left-2">
-                      <Badge className="bg-green-600 hover:bg-green-700">Fácil</Badge>
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent className="p-4"><div className="flex flex-col gap-2">
-                    <h3 className="text-xl font-semibold">Salada de Tomate com Queijo</h3>
-                    <p className="text-sm text-muted-foreground">Uma salada fresca e rápida de preparar.</p>
-                    <div className="flex items-center gap-4 mt-2">
-                      <div className="flex items-center gap-1 text-sm">
-                        <Clock className="h-4 w-4 text-muted-foreground" />
-                        <span>10 minutos</span>
-                      </div>
-                      <div className="flex items-center gap-1 text-sm">
-                        <ChefHat className="h-4 w-4 text-muted-foreground" />
-                        <span>Fácil</span>
+                      <h3 className="text-xl font-semibold">{recipe.title}</h3>
+                      <p className="text-sm text-muted-foreground">{recipe.description}</p>
+                      <div className="flex items-center gap-4 mt-2">
+                        <div className="flex items-center gap-1 text-sm">
+                          <Clock className="h-4 w-4 text-muted-foreground" />
+                          <span>{recipe.time}</span>
+                        </div>
+                        <div className="flex items-center gap-1 text-sm">
+                          <ChefHat className="h-4 w-4 text-muted-foreground" />
+                          <span>{recipe.difficulty}</span>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </CardContent><CardFooter className="p-4 pt-0">
-                  <Button className="w-full bg-green-600 hover:bg-green-700">Ver Receita</Button>
-                </CardFooter>
-              </Card>
+                  </CardContent>
+                  <CardFooter className="p-4 pt-0">
+                    <Button
+                      className="w-full bg-green-600 hover:bg-green-700"
+                      onClick={(e) => {
+                        e.stopPropagation()
+                        handleRecipeClick(recipe.id)
+                      }}
+                    >
+                      Ver Receita
+                    </Button>
+                  </CardFooter>
+                </Card>
+              ))}
             </div>
           </TabsContent>
         </Tabs>

@@ -14,11 +14,13 @@ import {
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 import { Menu, Settings, User, LogOut } from "lucide-react"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function Header() {
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
 
   // Verificar se o usuário está em uma página que requer autenticação
   useEffect(() => {
@@ -32,14 +34,20 @@ export default function Header() {
       setIsLoggedIn(false)
     }
   }, [pathname])
+
+  const handleLogout = () => {
+    setIsLoggedIn(false)
+    router.push("/")
+    toast.success("Logout realizado com sucesso!")
+  }
+
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <div className="container flex h-16 items-center justify-between">
         <div className="flex items-center gap-2">
           <Sheet>
             <SheetTrigger asChild>
-              {/* <Button variant="ghost" size="icon" className="md:hidden"> */}
-              <Button variant="ghost" size="icon" className="hidden md:flex lg:hidden">
+              <Button variant="ghost" size="icon" className="md:hidden">
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Abrir menu</span>
               </Button>
@@ -78,7 +86,7 @@ export default function Header() {
                   </>
                 ) : (
                   <>
-                  <Link href="/login" className="text-lg font-medium hover:text-green-600 transition-colors">
+                    <Link href="/login" className="text-lg font-medium hover:text-green-600 transition-colors">
                       Entrar
                     </Link>
                     <Link href="/cadastro" className="text-lg font-medium hover:text-green-600 transition-colors">
@@ -90,13 +98,7 @@ export default function Header() {
             </SheetContent>
           </Sheet>
           <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/placeholder.svg?height=32&width=32"
-              alt="PlanEats Logo"
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
+            <Image src="/images/logo.png" alt="PlanEats Logo" width={32} height={32} className="rounded-full" />
             <span className="text-xl font-bold">
               Plan<span className="text-amber-500">Eats</span>
             </span>
@@ -123,7 +125,7 @@ export default function Header() {
             </>
           ) : null}
         </nav>
-         <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4">
           {isLoggedIn ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -146,9 +148,9 @@ export default function Header() {
                     <Settings className="mr-2 h-4 w-4" />
                     <span>Configurações</span>
                   </Link>
-                  </DropdownMenuItem>
+                </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={() => setIsLoggedIn(false)} className="cursor-pointer">
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
                   <LogOut className="mr-2 h-4 w-4" />
                   <span>Sair</span>
                 </DropdownMenuItem>

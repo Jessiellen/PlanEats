@@ -28,7 +28,7 @@ const actionTypes = {
 let count = 0
 
 function genId() {
-   count = (count + 1) % Number.MAX_SAFE_INTEGER
+  count = (count + 1) % Number.MAX_SAFE_INTEGER
   return count.toString()
 }
 
@@ -51,7 +51,8 @@ type Action =
       type: ActionType["REMOVE_TOAST"]
       toastId?: ToasterToast["id"]
     }
-    interface State {
+
+interface State {
   toasts: ToasterToast[]
 }
 
@@ -100,7 +101,7 @@ export const reducer = (state: State, action: Action): State => {
         state.toasts.forEach((toast) => {
           addToRemoveQueue(toast.id)
         })
-         }
+      }
 
       return {
         ...state,
@@ -129,6 +130,7 @@ export const reducer = (state: State, action: Action): State => {
 }
 
 const listeners: Array<(state: State) => void> = []
+
 let memoryState: State = { toasts: [] }
 
 function dispatch(action: Action) {
@@ -161,7 +163,7 @@ function toast({ ...props }: Toast) {
       },
     },
   })
-  
+
   return {
     id: id,
     dismiss,
